@@ -1,0 +1,1415 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* ============ Auth Pages Layout ============ */
+.auth-page {
+    display: flex;
+    min-height: 100vh;
+    background-color: #ffffff;
+}
+
+.auth-info-section {
+    flex: 1;
+    background-color: #f5f5f5;
+    color: #000;
+    padding: 60px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid #d0d0d0;
+}
+
+.info-content {
+    max-width: 350px;
+    text-align: center;
+}
+
+.app-logo {
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    font-size: 48px;
+    line-height: 1;
+    color: #000;
+}
+
+.app-logo h1 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0px;
+    color: #000;
+}
+
+.app-description {
+    margin-bottom: 30px;
+}
+
+.app-description h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    line-height: 1.4;
+    color: #333;
+}
+
+.app-description p {
+    font-size: 13px;
+    line-height: 1.6;
+    opacity: 1;
+    margin-bottom: 20px;
+    color: #666;
+}
+
+.features-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.features-list li {
+    opacity: 1;
+    color: #555;
+}
+
+/* ============ Auth Form Section ============ */
+.auth-form-section {
+    flex: 1;
+    background-color: #ffffff;
+    padding: 60px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-wrapper {
+    width: 100%;
+    max-width: 400px;
+    background: white;
+    padding: 40px;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.form-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+/* ============ Form Elements ============ */
+.form-wrapper .form-group {
+    margin-bottom: 18px;
+}
+
+.form-wrapper .form-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.form-wrapper .form-control {
+    padding: 10px 12px;
+    font-size: 13px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    background-color: #ffffff;
+    color: #000;
+}
+
+.form-wrapper .form-control:focus {
+    border-color: #333;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+    outline: none;
+}
+
+.form-wrapper .form-control::placeholder {
+    color: #999;
+}
+
+/* ============ Form Links ============ */
+.form-wrapper a {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 12px;
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.form-wrapper a:hover {
+    color: #000;
+    text-decoration: underline;
+}
+
+/* ============ Buttons ============ */
+.form-wrapper .btn {
+    width: 100%;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 8px;
+}
+
+.form-wrapper .btn-primary {
+    background-color: #000;
+    color: white;
+    border: 1px solid #000;
+}
+
+.form-wrapper .btn-primary:hover {
+    background-color: #333;
+    border-color: #333;
+    transform: none;
+    box-shadow: none;
+}
+
+.form-wrapper .btn-primary:active {
+    background-color: #000;
+}
+
+.form-wrapper .btn-secondary {
+    background-color: #ffffff;
+    color: #000;
+    border: 1px solid #ccc;
+}
+
+.form-wrapper .btn-secondary:hover {
+    background-color: #f5f5f5;
+    border-color: #999;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-divider {
+    text-align: center;
+    margin: 16px 0;
+    font-size: 12px;
+    color: #999;
+    position: relative;
+}
+
+.text-divider::before,
+.text-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background-color: #d0d0d0;
+}
+
+.text-divider::before {
+    left: 0;
+}
+
+.text-divider::after {
+    right: 0;
+}
+
+/* ============ App Layout ============ */
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* ============ Sidebar ============ */
+.sidebar {
+    width: 250px;
+    background-color: #ffffff;
+    color: #000;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: none;
+    border-right: 1px solid #d0d0d0;
+}
+
+.sidebar-header {
+    margin-bottom: 30px;
+    border-bottom: 1px solid #d0d0d0;
+    padding-bottom: 15px;
+}
+
+.sidebar-header h5 {
+    font-size: 16px;
+    margin-bottom: 4px;
+    font-weight: 700;
+    color: #000;
+}
+
+.user-email {
+    font-size: 11px;
+    color: #999;
+    word-break: break-all;
+}
+
+.sidebar-menu {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.menu-item {
+    background: none;
+    border: none;
+    border-left: 3px solid transparent;
+    color: #555;
+    padding: 12px 15px;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 0;
+    transition: all 0.2s ease;
+    font-size: 13px;
+    font-weight: 500;
+    position: relative;
+}
+
+.menu-item:hover {
+    background-color: #f5f5f5;
+    color: #000;
+}
+
+.menu-item.active {
+    background-color: transparent;
+    color: #000;
+    border-left-color: #000;
+    font-weight: 600;
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    border-top: 1px solid #d0d0d0;
+    padding-top: 15px;
+}
+
+/* ============ Page Container ============ */
+.page-container {
+    background: white;
+    padding: 30px;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.page-container h1 {
+    color: #000;
+    margin-bottom: 15px;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.page-container p {
+    color: #666;
+    font-size: 13px;
+}
+
+/* ============ AI Insights Page ============ */
+.ai-insights-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.ai-page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.summary-panel {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(170px, 1fr));
+    gap: 18px;
+    margin-top: 20px;
+}
+
+.summary-item {
+    background: #f9fbff;
+    border: 1px solid #dde3f0;
+    border-radius: 14px;
+    padding: 18px;
+}
+
+.summary-title {
+    display: block;
+    color: #5f6d87;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.ai-results-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.ai-card {
+    background: #fff;
+    border: 1px solid #e1e8f5;
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 4px 18px rgba(28, 48, 86, 0.06);
+}
+
+.ai-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 14px;
+    gap: 16px;
+}
+
+.ai-card-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #111827;
+}
+
+.ai-card-header span {
+    color: #0f4c81;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.ai-card p {
+    margin: 0;
+    color: #4b5563;
+    line-height: 1.7;
+    font-size: 14px;
+}
+
+.ai-error-message {
+    background: #fff1f0;
+    color: #9a1b1b;
+    border: 1px solid #f5c2c7;
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 10px;
+}
+
+.ai-hint {
+    color: #374151;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+@media (max-width: 900px) {
+    .summary-panel,
+    .ai-results-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 520px) {
+    .ai-page-header {
+        align-items: stretch;
+    }
+}
+
+/* ============ Responsive Design ============ */
+@media (max-width: 1024px) {
+    .auth-info-section {
+        padding: 40px 30px;
+    }
+
+    .app-logo h1 {
+        font-size: 22px;
+    }
+
+    .app-description h2 {
+        font-size: 14px;
+    }
+
+    .form-wrapper {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Auth Pages - Stack vertically on mobile */
+    .auth-page {
+        flex-direction: column;
+        min-height: auto;
+    }
+
+    .auth-info-section {
+        padding: 40px 20px;
+        min-height: 280px;
+        border-right: none;
+        border-bottom: 1px solid #d0d0d0;
+    }
+
+    .auth-form-section {
+        padding: 30px 20px;
+        background-color: white;
+    }
+
+    .app-logo {
+        margin-bottom: 25px;
+    }
+
+    .logo-icon {
+        font-size: 40px;
+    }
+
+    .app-logo h1 {
+        font-size: 18px;
+    }
+
+    .app-description h2 {
+        font-size: 13px;
+    }
+
+    .app-description p {
+        font-size: 12px;
+    }
+
+    .features-list {
+        font-size: 11px;
+        gap: 8px;
+    }
+
+    .form-wrapper {
+        padding: 30px 20px;
+    }
+
+    .form-title {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
+    /* App Layout - Sidebar becomes horizontal */
+    .app-layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px;
+        border-right: none;
+        border-bottom: 1px solid #d0d0d0;
+    }
+
+    .sidebar-header {
+        margin-bottom: 0;
+        border-bottom: none;
+        border-right: 1px solid #d0d0d0;
+        padding-right: 15px;
+        padding-bottom: 0;
+    }
+
+    .sidebar-menu {
+        flex-direction: row;
+        flex: 1;
+        margin: 0 15px;
+        gap: 15px;
+    }
+
+    .menu-item {
+        border-left: none;
+        border-bottom: 2px solid transparent;
+        padding: 8px 12px;
+    }
+
+    .menu-item.active {
+        border-left: none;
+        border-bottom-color: #000;
+    }
+
+    .sidebar-footer {
+        margin-top: 0;
+        border-top: none;
+        border-left: 1px solid #d0d0d0;
+        padding-top: 0;
+        padding-left: 15px;
+    }
+
+    .page-container {
+        border-radius: 0;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-info-section {
+        min-height: 240px;
+        padding: 30px 15px;
+    }
+
+    .info-content {
+        max-width: 100%;
+    }
+
+    .app-logo h1 {
+        font-size: 16px;
+    }
+
+    .app-description h2 {
+        font-size: 12px;
+    }
+
+    .form-wrapper {
+        padding: 25px 15px;
+    }
+
+    .form-title {
+        font-size: 16px;
+    }
+
+    .form-wrapper .form-control {
+        padding: 9px 11px;
+        font-size: 12px;
+    }
+
+    .sidebar {
+        flex-wrap: wrap;
+    }
+
+    .sidebar-menu {
+        width: 100%;
+        margin: 10px 0;
+    }
+}
+
+
+/* ============ Accounts Page ============ */
+.accounts-page {
+    padding: 30px;
+}
+
+.accounts-container {
+    width: 100%;
+}
+
+.accounts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.accounts-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #000;
+    margin: 0;
+}
+
+.add-account-btn {
+    background-color: #000;
+    color: white;
+    border: 1px solid #000;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.add-account-btn:hover {
+    background-color: #333;
+    border-color: #333;
+    color: white;
+}
+
+.add-account-btn:active {
+    background-color: #000;
+}
+
+/* ============ Accounts Table ============ */
+.accounts-table-wrapper {
+    background: white;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #d0d0d0;
+}
+
+.accounts-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.table-header-row {
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #d0d0d0;
+}
+
+.table-header-cell {
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 700;
+    color: #000;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.table-body-row {
+    border-bottom: 1px solid #e8e8e8;
+    transition: background-color 0.2s ease;
+}
+
+.table-body-row:hover {
+    background-color: #fafafa;
+}
+
+.table-body-cell {
+    padding: 12px 16px;
+    color: #333;
+    font-size: 12px;
+    vertical-align: middle;
+}
+
+.balance-cell {
+    font-weight: 600;
+    color: #000;
+}
+
+/* ============ Actions Column ============ */
+.actions-cell {
+    text-align: center;
+    position: relative;
+}
+
+.actions-menu-container {
+    display: inline-block;
+    position: relative;
+}
+
+.actions-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #999;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 0;
+    transition: all 0.2s ease;
+}
+
+.actions-btn:hover {
+    background-color: transparent;
+    color: #000;
+}
+
+.actions-dropdown {
+    position: fixed;
+    background: white;
+    border: 1px solid #cccccc;
+    border-radius: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    z-index: 1000;
+    min-width: 100px;
+}
+
+.action-item {
+    display: block;
+    width: 100%;
+    padding: 10px 14px;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 12px;
+    color: #333;
+    transition: all 0.2s ease;
+}
+
+.action-item:hover {
+    background-color: #f5f5f5;
+}
+
+.action-item:first-child {
+    border-radius: 0;
+}
+
+.action-item:last-child {
+    border-radius: 0;
+}
+
+.edit-action {
+    color: #333;
+}
+
+.edit-action:hover {
+    background-color: #f5f5f5;
+    color: #000;
+}
+
+.delete-action {
+    color: #666;
+}
+
+.delete-action:hover {
+    background-color: #f5f5f5;
+}
+
+/* ============ Empty State ============ */
+.accounts-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 0;
+    color: #999;
+    font-size: 13px;
+}
+
+/* ============ Account Modal ============ */
+.account-modal {
+    --bs-modal-bg: white;
+}
+
+.account-modal-header {
+    border-bottom: 1px solid #d0d0d0;
+    padding: 16px 20px;
+    background-color: #ffffff;
+}
+
+.account-modal-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #000;
+}
+
+.account-modal-body {
+    padding: 20px;
+    background-color: #ffffff;
+}
+
+.account-form-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.account-form-control {
+    padding: 8px 11px;
+    font-size: 12px;
+    border: 1px solid #cccccc;
+    border-radius: 0;
+    transition: all 0.3s ease;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    background-color: #ffffff;
+    color: #000;
+}
+
+.account-form-control:focus {
+    border-color: #333;
+    box-shadow: none;
+    outline: none;
+}
+
+.account-form-control::placeholder {
+    color: #999;
+}
+
+.account-form-control.is-invalid {
+    border-color: #cccccc;
+}
+
+.account-form-control.is-invalid:focus {
+    border-color: #333;
+    box-shadow: none;
+}
+
+.invalid-feedback {
+    color: #666;
+    font-size: 10px;
+    margin-top: 3px;
+}
+
+.account-modal-footer {
+    border-top: 1px solid #d0d0d0;
+    padding: 12px 20px;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    background-color: #ffffff;
+}
+
+.account-cancel-btn {
+    background-color: white;
+    border: 1px solid #cccccc;
+    color: #000;
+    padding: 8px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.account-cancel-btn:hover {
+    background-color: #f5f5f5;
+    border-color: #999;
+}
+
+.account-save-btn {
+    background-color: #000;
+    color: white;
+    border: 1px solid #000;
+    padding: 8px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.account-save-btn:hover {
+    background-color: #333;
+    border-color: #333;
+}
+
+.account-save-btn:active {
+    background-color: #000;
+}
+
+/* ============ Bootstrap Overrides for Modal ============ */
+.modal-content {
+    border: 1px solid #d0d0d0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    border-radius: 0;
+}
+
+.modal-header .btn-close {
+    background-color: transparent;
+    border: none;
+    font-size: 16px;
+    opacity: 0.5;
+}
+
+.modal-header .btn-close:hover {
+    opacity: 1;
+}
+
+.form-select {
+    padding: 8px 11px;
+    font-size: 12px;
+    border: 1px solid #cccccc;
+    border-radius: 0;
+    transition: all 0.3s ease;
+    background-color: white;
+    color: #000;
+}
+
+.form-select:focus {
+    border-color: #333;
+    box-shadow: none;
+    outline: none;
+}
+
+/* ============ Responsive - Accounts ============ */
+@media (max-width: 768px) {
+    .accounts-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .accounts-title {
+        font-size: 24px;
+    }
+
+    .add-account-btn {
+        width: 100%;
+    }
+
+    .table-header-cell,
+    .table-body-cell {
+        padding: 12px 10px;
+        font-size: 12px;
+    }
+
+    .table-header-cell {
+        font-size: 11px;
+    }
+
+    .balance-cell {
+        font-size: 13px;
+    }
+
+    .accounts-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .account-modal-body {
+        padding: 20px 15px;
+    }
+
+    .account-form-label {
+        font-size: 13px;
+    }
+
+    .account-form-control {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .accounts-container {
+        padding: 15px;
+    }
+
+    .accounts-title {
+        font-size: 20px;
+    }
+
+    .add-account-btn {
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+
+    .table-header-cell,
+    .table-body-cell {
+        padding: 10px 8px;
+        font-size: 11px;
+    }
+
+    .actions-btn {
+        font-size: 18px;
+        padding: 4px 8px;
+    }
+
+    .action-item {
+        padding: 10px 14px;
+        font-size: 12px;
+    }
+
+    .account-modal-header,
+    .account-modal-footer {
+        padding: 16px 15px;
+    }
+
+    .account-modal-body {
+        padding: 16px 15px;
+    }
+}
+
+/* ============ Transactions Page ============ */
+.transactions-page {
+    padding: 30px;
+}
+
+.transactions-container {
+    width: 100%;
+}
+
+.transactions-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.transactions-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #000;
+    margin: 0;
+}
+
+.add-transaction-btn {
+    background-color: #000;
+    color: white;
+    border: 1px solid #000;
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.add-transaction-btn:hover {
+    background-color: #333;
+    border-color: #333;
+    color: white;
+}
+
+.add-transaction-btn:active {
+    background-color: #000;
+}
+
+/* ============ Transactions Table ============ */
+.transactions-table-wrapper {
+    background: white;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #d0d0d0;
+    margin-bottom: 20px;
+}
+
+.transactions-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.type-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.type-badge.debit {
+    background-color: #ffe6e6;
+    color: #cc0000;
+}
+
+.type-badge.credit {
+    background-color: #e6f3ff;
+    color: #0066cc;
+}
+
+.amount-cell {
+    font-weight: 600;
+    color: #000;
+}
+
+/* ============ Pagination ============ */
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: white;
+    border: 1px solid #d0d0d0;
+    border-top: none;
+}
+
+.pagination-info {
+    font-size: 12px;
+    color: #666;
+}
+
+.pagination-buttons {
+    display: flex;
+    gap: 4px;
+}
+
+.pagination-btn {
+    background-color: white;
+    border: 1px solid #d0d0d0;
+    color: #333;
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background-color: #f5f5f5;
+    border-color: #999;
+}
+
+.pagination-btn.active {
+    background-color: #000;
+    color: white;
+    border-color: #000;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ============ Empty State - Transactions ============ */
+.transactions-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 0;
+    color: #999;
+    font-size: 13px;
+}
+
+/* ============ Transaction Modal ============ */
+.transaction-modal {
+    --bs-modal-bg: white;
+}
+
+.transaction-modal-header {
+    border-bottom: 1px solid #d0d0d0;
+    padding: 16px 20px;
+    background-color: #ffffff;
+}
+
+.transaction-modal-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #000;
+}
+
+.transaction-modal-body {
+    padding: 20px;
+    background-color: #ffffff;
+}
+
+.transaction-form-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.transaction-form-control {
+    padding: 8px 11px;
+    font-size: 12px;
+    border: 1px solid #cccccc;
+    border-radius: 0;
+    transition: all 0.3s ease;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+    background-color: #ffffff;
+    color: #000;
+}
+
+.transaction-form-control:focus {
+    border-color: #333;
+    box-shadow: none;
+    outline: none;
+}
+
+.transaction-form-control::placeholder {
+    color: #999;
+}
+
+.transaction-form-control.is-invalid {
+    border-color: #cccccc;
+}
+
+.transaction-form-control.is-invalid:focus {
+    border-color: #333;
+    box-shadow: none;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.form-col {
+    margin-bottom: 0 !important;
+}
+
+.invalid-feedback {
+    color: #666;
+    font-size: 10px;
+    margin-top: 3px;
+}
+
+.transaction-modal-footer {
+    border-top: 1px solid #d0d0d0;
+    padding: 12px 20px;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    background-color: #ffffff;
+}
+
+.transaction-cancel-btn {
+    background-color: white;
+    border: 1px solid #cccccc;
+    color: #000;
+    padding: 8px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.transaction-cancel-btn:hover {
+    background-color: #f5f5f5;
+    border-color: #999;
+}
+
+.transaction-save-btn {
+    background-color: #000;
+    color: white;
+    border: 1px solid #000;
+    padding: 8px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.transaction-save-btn:hover {
+    background-color: #333;
+    border-color: #333;
+}
+
+.transaction-save-btn:active {
+    background-color: #000;
+}
+
+/* ============ Responsive - Transactions ============ */
+@media (max-width: 768px) {
+    .transactions-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .transactions-title {
+        font-size: 24px;
+    }
+
+    .add-transaction-btn {
+        width: 100%;
+    }
+
+    .table-header-cell,
+    .table-body-cell {
+        padding: 12px 10px;
+        font-size: 12px;
+    }
+
+    .table-header-cell {
+        font-size: 11px;
+    }
+
+    .amount-cell {
+        font-size: 13px;
+    }
+
+    .transactions-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .transaction-modal-body {
+        padding: 20px 15px;
+    }
+
+    .transaction-form-label {
+        font-size: 13px;
+    }
+
+    .transaction-form-control {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .transactions-container {
+        padding: 15px;
+    }
+
+    .transactions-title {
+        font-size: 20px;
+    }
+
+    .add-transaction-btn {
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+
+    .table-header-cell,
+    .table-body-cell {
+        padding: 10px 8px;
+        font-size: 11px;
+    }
+
+    .actions-btn {
+        font-size: 18px;
+        padding: 4px 8px;
+    }
+
+    .action-item {
+        padding: 10px 14px;
+        font-size: 12px;
+    }
+
+    .transaction-modal-header,
+    .transaction-modal-footer {
+        padding: 16px 15px;
+    }
+
+    .transaction-modal-body {
+        padding: 16px 15px;
+    }
+
+    .pagination-container {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .pagination-info {
+        width: 100%;
+        text-align: center;
+    }
+
+    .pagination-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+}
