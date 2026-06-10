@@ -1,73 +1,133 @@
-# React + TypeScript + Vite
+# Finance Management Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Project overview
+This is a finance management application built with React, TypeScript, and Vite. It allows users to manage accounts, track transactions, view a dashboard, and receive AI-driven financial insights.
 
-Currently, two official plugins are available:
+The app includes:
+- User authentication with login and signup views
+- Protected routes for authenticated users
+- Account and transaction management stored in `localStorage`
+- A dashboard summary page
+- A modern UI built with React Bootstrap and custom CSS
+- An AI Insights page that summarizes transaction data and requests a financial analysis from Gemini
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## How the project works
+1. **Authentication**
+   - Users sign up or log in using email and password fields.
+   - The application stores user session data in `localStorage`.
+   - Unauthenticated users are redirected to `/login`.
 
-## React Compiler
+2. **Protected routes**
+   - The app uses `react-router` and a `ProtectedRoute` wrapper.
+   - Authenticated pages include dashboard, accounts, transactions, AI insights, and profile.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+3. **Data storage**
+   - Transaction and account data are saved in the browser's `localStorage`.
+   - This keeps the app functional without a backend.
 
-## Expanding the ESLint configuration
+4. **AI Insights**
+   - The `AI Insights` page reads transaction data from `localStorage`.
+   - It calculates:
+     - Total income
+     - Total expenses
+     - Net savings
+     - Highest spending category
+   - It sends the summary to Google Gemini using the `@google/generative-ai` library.
+   - The response is displayed in reusable cards for:
+     - Spending analysis
+     - Overspending areas
+     - Budget recommendations
+     - Savings recommendations
+     - Financial health score
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Available routes
+The app supports the following routes:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- `/login` — login page
+- `/sign-up` — signup page
+- `/home` — dashboard overview
+- `/home/accounts` — accounts management page
+- `/home/transactions` — transaction list and editing page
+- `/home/insights` — AI Insights page
+- `/home/profile` — user profile page
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Project structure
+Key files and folders:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- `src/App.tsx` — main route definitions and layout
+- `src/main.tsx` — application bootstrap with `BrowserRouter`
+- `src/components/SideBar.tsx` — navigation menu for authenticated pages
+- `src/components/ProtectedRoute.tsx` — route guard for authenticated content
+- `src/components/TransactionsListing.tsx` — transaction data table and editing logic
+- `src/components/Insights.tsx` — AI Insights page and Gemini integration
+- `src/components/AIInsightsCard.tsx` — reusable card component for AI results
+- `src/components/style.css` — global styles and responsive layout
+- `public/_redirects` — Netlify redirect rules for SPA routing
+
+## AI integration details
+The AI integration is implemented in `src/components/Insights.tsx`:
+- Reads transaction data from `localStorage`
+- Summarizes financial totals and categories
+- Uses `@google/generative-ai` to call Gemini
+- Renders the AI response in reusable cards
+
+### Environment variable
+The Gemini key is stored in:
+- `.env`
+
+Example:
+```env
+VITE_GEMINI_API_KEY=YOUR_GOOGLE_GEMINI_API_KEY
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Running the project locally
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Create a `.env` file with your Gemini API key.
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+4. Open the app in the browser at the local Vite address.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Deployment notes
+- The project is set up for SPA deployment on Netlify.
+- The `public/_redirects` file ensures client-side routes work after deploy.
+- Example deployed route paths:
+  - `https://ai-finance-management.netlify.app/home`
+  - `https://ai-finance-management.netlify.app/login`
+  - `https://ai-finance-management.netlify.app/home/insights`
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Screenshots to include for interview/demo
+Add high-quality screenshots for the following views:
+
+1. **Login page**
+   - Show the initial authentication screen.
+2. **Dashboard page**
+   - Show summary cards or dashboard widgets.
+3. **Accounts page**
+   - Show account listing or account details.
+4. **Transactions page**
+   - Show transaction table and add/edit buttons.
+5. **AI Insights page**
+   - Show the `Generate AI Analysis` button, summary panel, and AI result cards.
+6. **Profile page**
+   - Show the user profile area and sidebar navigation.
+
+## Why this project is resume-worthy
+- Demonstrates full-stack React skills with TypeScript and Vite
+- Implements client-side authentication and protected routing
+- Uses browser storage and local persistence
+- Integrates AI using Google Gemini
+- Includes SPA-ready Netlify configuration for deployment
+- Uses reusable React components and clean page layout
+
+## Future improvements
+Potential upgrades for production readiness:
+- Add a backend API for secure authentication and persistent storage
+- Move AI calls to a serverless function or backend proxy
+- Add unit tests and integration tests
+- Implement better error handling and loading states
+- Add real account synchronization and external bank data support
