@@ -25,6 +25,23 @@ interface Transaction {
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+const formatDisplayDate = (value?: string) => {
+    if (!value) {
+        return '';
+    }
+
+    const parsedDate = new Date(value);
+    if (Number.isNaN(parsedDate.getTime())) {
+        return value;
+    }
+
+    return parsedDate.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+    });
+};
+
 const Dashboard = () => {
     const [profile, setProfile] = useState<ProfileData | null>(null);
     const [accounts, setAccounts] = useState<Account[]>([]);
@@ -158,7 +175,7 @@ const Dashboard = () => {
                                         <li key={transaction._id} style={{ marginBottom: '12px' }}>
                                             <strong>{transaction.description}</strong>
                                             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: '#4b5563' }}>
-                                                <span>{transaction.category} • {transaction.account}</span>
+                                                <span>{formatDisplayDate(transaction.date)} • {transaction.category} • {transaction.account}</span>
                                                 <span>{transaction.type === 'Credit' ? '+' : '-'}${Number(transaction.amount || 0).toFixed(2)}</span>
                                             </div>
                                         </li>

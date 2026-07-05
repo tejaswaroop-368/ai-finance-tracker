@@ -18,6 +18,23 @@ interface DropdownPosition {
     left: number;
 }
 
+const formatDisplayDate = (value: string) => {
+    if (!value) {
+        return '';
+    }
+
+    const parsedDate = new Date(value);
+    if (Number.isNaN(parsedDate.getTime())) {
+        return value;
+    }
+
+    return parsedDate.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+    });
+};
+
 const TransactionsListing = () => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [showModal, setShowModal] = useState(false);
@@ -75,7 +92,7 @@ const TransactionsListing = () => {
                     type: transaction.type,
                     amount: transaction.amount,
                 });
-                setTransactions(transactions.map(txn => txn.id === transaction.id ? { ...txn, ...updated, id: updated._id } : txn));
+                setTransactions((currentTransactions) => currentTransactions.map(txn => txn.id === transaction.id ? { ...txn, ...updated, id: updated._id } : txn));
             } else {
                 const created = await createTransaction({
                     date: transaction.date,
@@ -85,11 +102,12 @@ const TransactionsListing = () => {
                     type: transaction.type,
                     amount: transaction.amount,
                 });
-                setTransactions([...transactions, { ...created, id: created._id }]);
+                setTransactions((currentTransactions) => [...currentTransactions, { ...created, id: created._id }]);
             }
             setShowModal(false);
+            setEditingTransaction(null);
         } catch (error: any) {
-            alert(error.message || 'Failed to save transaction');
+            throw new Error(error.message || 'Failed to save transaction');
         }
     };
 
@@ -187,7 +205,7 @@ const TransactionsListing = () => {
                             <tbody>
                                 {paginatedTransactions.map((transaction) => (
                                     <tr key={transaction.id} className="table-body-row">
-                                        <td className="table-body-cell">{transaction.date}</td>
+                                        <td className="table-body-cell">{formatDisplayDate(transaction.date)}</td>
                                         <td className="table-body-cell">{transaction.description}</td>
                                         <td className="table-body-cell">{transaction.category}</td>
                                         <td className="table-body-cell">{transaction.account}</td>

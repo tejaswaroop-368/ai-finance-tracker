@@ -14,9 +14,36 @@ interface Transaction {
 interface TransactionModalProps {
     show: boolean;
     onHide: () => void;
-    onSave: (transaction: Transaction) => void;
+    onSave: (transaction: Transaction) => Promise<void> | void;
     editingTransaction?: Transaction | null;
 }
+
+const API_URL = import.meta.env.VITE_API_URL;
+
+const formatDateForInput = (value?: string | Date) => {
+    if (!value) {
+        const today = new Date();
+        return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    }
+
+    if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        return value;
+    }
+
+    const parsedDate = new Date(value);
+    if (Number.isNaN(parsedDate.getTime())) {
+        const today = new Date();
+        return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    }
+
+    return `${parsedDate.getFullYear()}-${String(parsedDate.getMonth() + 1).padStart(2, '0')}-${String(parsedDate.getDate()).padStart(2, '0')}`;
+};
+
+const toIsoDateString = (value: string) => {
+    const [year, month, day] = value.split('-').map(Number);
+    const date = new Date(year, month - 1, day, 12, 0, 0);
+    return date.toISOString();
+};
 
 const TransactionModal = ({ show, onHide, onSave, editingTransaction }: TransactionModalProps) => {
     const [date, setDate] = useState('');
@@ -26,34 +53,55 @@ const TransactionModal = ({ show, onHide, onSave, editingTransaction }: Transact
     const [type, setType] = useState('Debit');
     const [amount, setAmount] = useState('');
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
+    const [submitError, setSubmitError] = useState('');
+    const [availableAccounts, setAvailableAccounts] = useState<string[]>([]);
 
     const categories = ['Groceries', 'Transport', 'Dining', 'Entertainment', 'Utilities', 'Income', 'Other'];
-    const accounts = ['Checking Account', 'Savings Account', 'Credit Card'];
+
+    useEffect(() => {
+        const loadAccounts = async () => {
+            try {
+                const response = await fetch(`${API_URL}/api/accounts`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
+
+                if (!response.ok) {
+                    return;
+                }
+
+                const data = await response.json();
+                const names = (Array.isArray(data) ? data : []).map((item: any) => item.name).filter(Boolean);
+                setAvailableAccounts(names);
+            } catch (error) {
+                console.error('Unable to load accounts', error);
+            }
+        };
+
+        loadAccounts();
+    }, []);
 
     useEffect(() => {
         if (editingTransaction) {
-            setDate(editingTransaction.date);
+            setDate(formatDateForInput(editingTransaction.date));
             setDescription(editingTransaction.description);
             setCategory(editingTransaction.category);
-            setAccount(editingTransaction.account);
+            setAccount(editingTransaction.account || availableAccounts[0] || 'Checking Account');
             setType(editingTransaction.type);
             setAmount(editingTransaction.amount.toString());
         } else {
-            const today = new Date();
-            const formattedDate = today.toLocaleDateString('en-GB', {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric',
-            });
-            setDate(formattedDate);
+            setDate(formatDateForInput());
             setDescription('');
             setCategory('Groceries');
-            setAccount('Checking Account');
+            setAccount(availableAccounts[0] || 'Checking Account');
             setType('Debit');
             setAmount('');
         }
         setErrors({});
-    }, [editingTransaction, show]);
+        setSubmitError('');
+    }, [editingTransaction, show, availableAccounts]);
 
     const validateForm = () => {
         const newErrors: { [key: string]: string } = {};
@@ -86,19 +134,27 @@ const TransactionModal = ({ show, onHide, onSave, editingTransaction }: Transact
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSave = () => {
-        if (validateForm()) {
-            const newTransaction: Transaction = {
-                id: editingTransaction?.id || Date.now().toString(),
-                date,
-                description,
-                category,
-                account,
-                type,
-                amount: parseFloat(amount),
-            };
-            onSave(newTransaction);
+    const handleSave = async () => {
+        if (!validateForm()) {
+            return;
+        }
+
+        const newTransaction: Transaction = {
+            id: editingTransaction?.id || Date.now().toString(),
+            date: toIsoDateString(date),
+            description,
+            category,
+            account,
+            type,
+            amount: parseFloat(amount),
+        };
+
+        try {
+            setSubmitError('');
+            await onSave(newTransaction);
             handleClose();
+        } catch (error: any) {
+            setSubmitError(error.message || 'Failed to save transaction');
         }
     };
 
@@ -110,6 +166,7 @@ const TransactionModal = ({ show, onHide, onSave, editingTransaction }: Transact
         setType('Debit');
         setAmount('');
         setErrors({});
+        setSubmitError('');
         onHide();
     };
 
@@ -126,8 +183,7 @@ const TransactionModal = ({ show, onHide, onSave, editingTransaction }: Transact
                         <Form.Group className="mb-4 form-col" controlId="formDate">
                             <Form.Label className="transaction-form-label">Date</Form.Label>
                             <Form.Control
-                                type="text"
-                                placeholder="DD-MMM-YYYY"
+                                type="date"
                                 value={date}
                                 onChange={(e) => setDate(e.target.value)}
                                 className={`transaction-form-control ${errors.date ? 'is-invalid' : ''}`}
@@ -193,9 +249,13 @@ const TransactionModal = ({ show, onHide, onSave, editingTransaction }: Transact
                                 onChange={(e) => setAccount(e.target.value)}
                                 className={`transaction-form-control ${errors.account ? 'is-invalid' : ''}`}
                             >
-                                {accounts.map((acc) => (
-                                    <option key={acc}>{acc}</option>
-                                ))}
+                                {availableAccounts.length > 0 ? (
+                                    availableAccounts.map((acc) => (
+                                        <option key={acc}>{acc}</option>
+                                    ))
+                                ) : (
+                                    <option>Checking Account</option>
+                                )}
                             </Form.Select>
                             {errors.account && (
                                 <div className="invalid-feedback d-block">{errors.account}</div>
@@ -211,11 +271,14 @@ const TransactionModal = ({ show, onHide, onSave, editingTransaction }: Transact
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
                             className={`transaction-form-control ${errors.amount ? 'is-invalid' : ''}`}
-                            isInvalid={!!errors.amount}
+                            isInvalid={!!errors.amount || !!submitError}
                             step="0.01"
                         />
                         {errors.amount && (
                             <Form.Control.Feedback type="invalid">{errors.amount}</Form.Control.Feedback>
+                        )}
+                        {submitError && (
+                            <div className="invalid-feedback d-block">{submitError}</div>
                         )}
                     </Form.Group>
                 </Form>
