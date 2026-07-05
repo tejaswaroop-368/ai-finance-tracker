@@ -7,18 +7,30 @@ const getAccountByName = async (userId, accountName) => {
   return Account.findOne({ userId, name: accountName });
 };
 
+const applyTransactionEffectToBalance = (balance, type, amount) => {
+  const numericAmount = Number(amount);
+  if (isExpenseType(type)) {
+    return Number(balance) - numericAmount;
+  }
+
+  return Number(balance) + numericAmount;
+};
+
+const removeTransactionEffectFromBalance = (balance, type, amount) => {
+  const numericAmount = Number(amount);
+  if (isExpenseType(type)) {
+    return Number(balance) + numericAmount;
+  }
+
+  return Number(balance) - numericAmount;
+};
+
 const applyTransactionEffect = async (accountDoc, type, amount) => {
   if (!accountDoc) {
     return null;
   }
 
-  const numericAmount = Number(amount);
-  if (isExpenseType(type)) {
-    accountDoc.balance = Number(accountDoc.balance) - numericAmount;
-  } else {
-    accountDoc.balance = Number(accountDoc.balance) + numericAmount;
-  }
-
+  accountDoc.balance = applyTransactionEffectToBalance(accountDoc.balance, type, amount);
   await accountDoc.save();
   return accountDoc;
 };
@@ -28,13 +40,7 @@ const revertTransactionEffect = async (accountDoc, type, amount) => {
     return null;
   }
 
-  const numericAmount = Number(amount);
-  if (isExpenseType(type)) {
-    accountDoc.balance = Number(accountDoc.balance) + numericAmount;
-  } else {
-    accountDoc.balance = Number(accountDoc.balance) - numericAmount;
-  }
-
+  accountDoc.balance = removeTransactionEffectFromBalance(accountDoc.balance, type, amount);
   await accountDoc.save();
   return accountDoc;
 };
@@ -62,8 +68,8 @@ export const createTransaction = async (req, res) => {
     }
 
     const numericAmount = Number(amount);
-    if (isExpenseType(type) && accountDoc.balance < numericAmount) {
-      return res.status(400).json({ message: 'Insufficient balance.' });
+    if (isExpenseType(type) && Number(accountDoc.balance) < numericAmount) {
+      return res.status(400).json({ message: 'Insufficient balance' });
     }
 
     const transaction = await Transaction.create({
@@ -100,24 +106,30 @@ export const updateTransaction = async (req, res) => {
     const nextAccountName = account ?? previousAccountName;
     const nextType = type ?? previousType;
     const nextAmount = amount === undefined ? previousAmount : Number(amount);
+    const numericAmount = Number(nextAmount);
 
     const previousAccountDoc = await getAccountByName(req.user.id, previousAccountName);
-    if (previousAccountDoc && previousAccountName !== nextAccountName) {
-      await revertTransactionEffect(previousAccountDoc, previousType, previousAmount);
-    }
-
     const targetAccountDoc = await getAccountByName(req.user.id, nextAccountName);
     if (!targetAccountDoc) {
       return res.status(400).json({ message: 'Account not found' });
     }
 
+    let projectedBalance = Number(targetAccountDoc.balance);
     if (previousAccountName === nextAccountName) {
-      await revertTransactionEffect(targetAccountDoc, previousType, previousAmount);
+      projectedBalance = removeTransactionEffectFromBalance(projectedBalance, previousType, previousAmount);
     }
 
-    const numericAmount = Number(nextAmount);
-    if (isExpenseType(nextType) && Number(targetAccountDoc.balance) < numericAmount) {
-      return res.status(400).json({ message: 'Insufficient balance.' });
+    projectedBalance = applyTransactionEffectToBalance(projectedBalance, nextType, numericAmount);
+    if (isExpenseType(nextType) && projectedBalance < 0) {
+      return res.status(400).json({ message: 'Insufficient balance' });
+    }
+
+    if (previousAccountName !== nextAccountName && previousAccountDoc) {
+      await revertTransactionEffect(previousAccountDoc, previousType, previousAmount);
+    }
+
+    if (previousAccountName === nextAccountName) {
+      await revertTransactionEffect(targetAccountDoc, previousType, previousAmount);
     }
 
     await applyTransactionEffect(targetAccountDoc, nextType, numericAmount);

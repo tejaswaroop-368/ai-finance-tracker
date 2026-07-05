@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 interface ProfileData {
+    name?: string;
     email: string;
     createdAt?: string;
     updatedAt?: string;
@@ -40,6 +41,19 @@ const formatDisplayDate = (value?: string) => {
         month: 'short',
         year: 'numeric',
     });
+};
+
+const getDisplayName = (profile: ProfileData | null) => {
+    if (!profile) {
+        return '';
+    }
+
+    if (typeof profile.name === 'string' && profile.name.trim()) {
+        return profile.name.trim();
+    }
+
+    const localPart = profile.email.split('@')[0] || profile.email;
+    return localPart.charAt(0).toUpperCase() + localPart.slice(1);
 };
 
 const Dashboard = () => {
@@ -116,7 +130,7 @@ const Dashboard = () => {
         <div className="page-container">
             <div className="dashboard-header">
                 <h1>Dashboard</h1>
-                <p>{profile ? `Welcome back, ${profile.email}` : 'Welcome to your financial dashboard'}</p>
+                <p>{profile ? `Welcome back, ${getDisplayName(profile)}!` : 'Welcome to your financial dashboard'}</p>
             </div>
 
             {isLoading && <p>Loading dashboard data...</p>}
