@@ -35,6 +35,16 @@ const formatDisplayDate = (value: string) => {
     });
 };
 
+const normalizeTransaction = (transaction: any): Transaction => ({
+    id: transaction._id || transaction.id,
+    date: transaction.date,
+    description: transaction.description,
+    category: transaction.category,
+    account: transaction.account,
+    type: transaction.type,
+    amount: transaction.amount,
+});
+
 const TransactionsListing = () => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [showModal, setShowModal] = useState(false);
@@ -42,6 +52,7 @@ const TransactionsListing = () => {
     const [showActionsMenu, setShowActionsMenu] = useState<string | null>(null);
     const [dropdownPos, setDropdownPos] = useState<DropdownPosition>({ top: 0, left: 0 });
     const [currentPage, setCurrentPage] = useState(1);
+    const [feedback, setFeedback] = useState('');
     const itemsPerPage = 10;
     const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
@@ -49,9 +60,9 @@ const TransactionsListing = () => {
         const loadTransactions = async () => {
             try {
                 const data = await fetchTransactions();
-                setTransactions(data);
+                setTransactions(Array.isArray(data) ? data.map(normalizeTransaction) : []);
             } catch (error: any) {
-                console.error(error.message || 'Unable to load transactions');
+                setFeedback(error.message || 'Unable to load transactions');
             }
         };
 
@@ -59,11 +70,13 @@ const TransactionsListing = () => {
     }, []);
 
     const handleShowModal = () => {
+        setFeedback('');
         setEditingTransaction(null);
         setShowModal(true);
     };
 
     const handleEditTransaction = (transaction: Transaction) => {
+        setFeedback('');
         setShowActionsMenu(null);
         setEditingTransaction(transaction);
         setShowModal(true);
@@ -73,10 +86,12 @@ const TransactionsListing = () => {
         if (window.confirm('Are you sure you want to delete this transaction?')) {
             try {
                 await deleteTransaction(id);
-                setTransactions(transactions.filter(transaction => transaction.id !== id));
+                setTransactions((currentTransactions) => currentTransactions.filter(transaction => transaction.id !== id));
                 setShowActionsMenu(null);
+                setFeedback('Transaction deleted');
+                window.dispatchEvent(new Event('finance-data-changed'));
             } catch (error: any) {
-                alert(error.message || 'Failed to delete transaction');
+                setFeedback(error.message || 'Unable to delete transaction');
             }
         }
     };
@@ -106,8 +121,10 @@ const TransactionsListing = () => {
             }
             setShowModal(false);
             setEditingTransaction(null);
+            setFeedback(editingTransaction ? 'Transaction updated' : 'Transaction created');
+            window.dispatchEvent(new Event('finance-data-changed'));
         } catch (error: any) {
-            throw new Error(error.message || 'Failed to save transaction');
+            throw new Error(error.message || 'Invalid request');
         }
     };
 
@@ -186,6 +203,12 @@ const TransactionsListing = () => {
                     + Add Transaction
                 </Button>
             </div>
+
+            {feedback && (
+                <div className="ai-error-message" style={{ marginBottom: '12px' }}>
+                    {feedback}
+                </div>
+            )}
 
             {transactions.length > 0 ? (
                 <>

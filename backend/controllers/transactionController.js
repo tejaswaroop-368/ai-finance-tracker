@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Transaction from '../models/Transaction.js';
 import Account from '../models/Account.js';
 
@@ -93,6 +94,10 @@ export const createTransaction = async (req, res) => {
 export const updateTransaction = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid request' });
+    }
+
     const { account, date, description, category, type, amount } = req.body;
 
     const transaction = await Transaction.findOne({ _id: id, userId: req.user.id });
@@ -151,6 +156,10 @@ export const updateTransaction = async (req, res) => {
 export const deleteTransaction = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid request' });
+    }
+
     const transaction = await Transaction.findOne({ _id: id, userId: req.user.id });
     if (!transaction) {
       return res.status(404).json({ message: 'Transaction not found' });

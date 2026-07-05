@@ -15,21 +15,29 @@ interface DropdownPosition {
     left: number;
 }
 
+const normalizeAccount = (account: any): Account => ({
+    id: account._id || account.id,
+    name: account.name,
+    type: account.type,
+    balance: account.balance,
+});
+
 const AccountsListing = () => {
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [showModal, setShowModal] = useState(false);
     const [editingAccount, setEditingAccount] = useState<Account | null>(null);
     const [showActionsMenu, setShowActionsMenu] = useState<string | null>(null);
     const [dropdownPos, setDropdownPos] = useState<DropdownPosition>({ top: 0, left: 0 });
+    const [feedback, setFeedback] = useState('');
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const loadAccounts = async () => {
             try {
                 const data = await fetchAccounts();
-                setAccounts(data);
+                setAccounts(Array.isArray(data) ? data.map(normalizeAccount) : []);
             } catch (error: any) {
-                console.error(error.message || 'Unable to load accounts');
+                setFeedback(error.message || 'Unable to load accounts');
             }
         };
 
@@ -37,11 +45,13 @@ const AccountsListing = () => {
     }, []);
 
     const handleShowModal = () => {
+        setFeedback('');
         setEditingAccount(null);
         setShowModal(true);
     };
 
     const handleEditAccount = (account: Account) => {
+        setFeedback('');
         setEditingAccount(account);
         setShowModal(true);
         setShowActionsMenu(null);
@@ -51,10 +61,12 @@ const AccountsListing = () => {
         if (window.confirm('Are you sure you want to delete this account?')) {
             try {
                 await deleteAccount(id);
-                setAccounts(accounts.filter(account => account.id !== id));
+                setAccounts((currentAccounts) => currentAccounts.filter(account => account.id !== id));
                 setShowActionsMenu(null);
+                setFeedback('Account deleted');
+                window.dispatchEvent(new Event('finance-data-changed'));
             } catch (error: any) {
-                alert(error.message || 'Failed to delete account');
+                setFeedback(error.message || 'Unable to delete account');
             }
         }
     };
@@ -67,18 +79,20 @@ const AccountsListing = () => {
                     type: account.type,
                     balance: account.balance,
                 });
-                setAccounts(accounts.map(acc => acc.id === updated._id ? { ...acc, ...updated, id: updated._id } : acc));
+                setAccounts((currentAccounts) => currentAccounts.map(acc => acc.id === updated._id ? { ...acc, ...updated, id: updated._id } : acc));
             } else {
                 const created = await createAccount({
                     name: account.name,
                     type: account.type,
                     balance: account.balance,
                 });
-                setAccounts([...accounts, { ...created, id: created._id }]);
+                setAccounts((currentAccounts) => [...currentAccounts, { ...created, id: created._id }]);
             }
             setShowModal(false);
+            setFeedback(editingAccount ? 'Account updated' : 'Account created');
+            window.dispatchEvent(new Event('finance-data-changed'));
         } catch (error: any) {
-            alert(error.message || 'Failed to save account');
+            setFeedback(error.message || 'Invalid request');
         }
     };
 
@@ -144,6 +158,12 @@ const AccountsListing = () => {
                     + Add Account
                 </Button>
             </div>
+
+            {feedback && (
+                <div className="ai-error-message" style={{ marginBottom: '12px' }}>
+                    {feedback}
+                </div>
+            )}
 
             {accounts.length > 0 ? (
                 <div className="accounts-table-wrapper">

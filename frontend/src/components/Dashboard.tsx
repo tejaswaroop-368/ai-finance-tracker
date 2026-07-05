@@ -68,49 +68,58 @@ const Dashboard = () => {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
     });
 
-    useEffect(() => {
-        const loadDashboardData = async () => {
-            setIsLoading(true);
-            setError('');
+    const loadDashboardData = async () => {
+        setIsLoading(true);
+        setError('');
 
-            try {
-                const [profileRes, accountsRes, transactionsRes] = await Promise.all([
-                    fetch(`${API_URL}/api/auth/me`, { headers: authHeaders() }),
-                    fetch(`${API_URL}/api/accounts`, { headers: authHeaders() }),
-                    fetch(`${API_URL}/api/transactions`, { headers: authHeaders() }),
-                ]);
+        try {
+            const [profileRes, accountsRes, transactionsRes] = await Promise.all([
+                fetch(`${API_URL}/api/auth/me`, { headers: authHeaders() }),
+                fetch(`${API_URL}/api/accounts`, { headers: authHeaders() }),
+                fetch(`${API_URL}/api/transactions`, { headers: authHeaders() }),
+            ]);
 
-                if (!profileRes.ok) {
-                    const errorBody = await profileRes.json().catch(() => ({}));
-                    throw new Error(errorBody.message || 'Unable to load profile data.');
-                }
-
-                if (!accountsRes.ok) {
-                    const errorBody = await accountsRes.json().catch(() => ({}));
-                    throw new Error(errorBody.message || 'Unable to load accounts.');
-                }
-
-                if (!transactionsRes.ok) {
-                    const errorBody = await transactionsRes.json().catch(() => ({}));
-                    throw new Error(errorBody.message || 'Unable to load transactions.');
-                }
-
-                const profileData = await profileRes.json();
-                const accountsData = await accountsRes.json();
-                const transactionsData = await transactionsRes.json();
-
-                setProfile(profileData);
-                setAccounts(Array.isArray(accountsData) ? accountsData : []);
-                setTransactions(Array.isArray(transactionsData) ? transactionsData : []);
-            } catch (fetchError) {
-                const message = fetchError instanceof Error ? fetchError.message : 'Unable to load dashboard data.';
-                setError(message);
-            } finally {
-                setIsLoading(false);
+            if (!profileRes.ok) {
+                const errorBody = await profileRes.json().catch(() => ({}));
+                throw new Error(errorBody.message || 'Unable to load profile data.');
             }
+
+            if (!accountsRes.ok) {
+                const errorBody = await accountsRes.json().catch(() => ({}));
+                throw new Error(errorBody.message || 'Unable to load accounts.');
+            }
+
+            if (!transactionsRes.ok) {
+                const errorBody = await transactionsRes.json().catch(() => ({}));
+                throw new Error(errorBody.message || 'Unable to load transactions.');
+            }
+
+            const profilePayload = await profileRes.json();
+            const accountsData = await accountsRes.json();
+            const transactionsData = await transactionsRes.json();
+
+            setProfile(profilePayload.user || profilePayload || null);
+            setAccounts(Array.isArray(accountsData) ? accountsData : []);
+            setTransactions(Array.isArray(transactionsData) ? transactionsData : []);
+        } catch (fetchError) {
+            const message = fetchError instanceof Error ? fetchError.message : 'Unable to load dashboard data.';
+            setError(message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        loadDashboardData();
+    }, []);
+
+    useEffect(() => {
+        const handleRefresh = () => {
+            loadDashboardData();
         };
 
-        loadDashboardData();
+        window.addEventListener('finance-data-changed', handleRefresh);
+        return () => window.removeEventListener('finance-data-changed', handleRefresh);
     }, []);
 
     const totalBalance = accounts.reduce((sum, account) => sum + Number(account.balance || 0), 0);
