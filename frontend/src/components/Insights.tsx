@@ -51,7 +51,7 @@ const Insights = () => {
     const loadTransactions = async (): Promise<Transaction[]> => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5001/api/transactions', {
+            const response = await fetch(`${API_URL}/api/transactions`, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,

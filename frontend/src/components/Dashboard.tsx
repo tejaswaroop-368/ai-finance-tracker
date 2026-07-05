@@ -23,7 +23,7 @@ interface Transaction {
     amount: number;
 }
 
-const API_BASE = 'http://localhost:5001';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Dashboard = () => {
     const [profile, setProfile] = useState<ProfileData | null>(null);

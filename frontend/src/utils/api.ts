@@ -1,7 +1,7 @@
-const API_BASE = 'http://localhost:5001';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const signUp = async (email: string, password: string) => {
-  const response = await fetch(`${API_BASE}/api/auth/signup`, {
+  const response = await fetch(`${API_URL}/api/auth/signup`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -6,7 +6,7 @@ interface ProfileData {
     updatedAt?: string;
 }
 
-const API_BASE = 'http://localhost:5001';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Profile = () => {
     const [profile, setProfile] = useState<ProfileData | null>(null);
