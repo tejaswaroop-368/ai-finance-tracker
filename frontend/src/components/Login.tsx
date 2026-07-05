@@ -3,6 +3,7 @@ import { Button } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import { Link, useNavigate } from 'react-router';
 import AuthLayout from './AuthLayout';
+import { login } from '../utils/api';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -10,7 +11,7 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     let navigate = useNavigate();
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
         if (!email) {
             alert("Email is mandatory")
             return;
@@ -19,30 +20,17 @@ const Login = () => {
             alert("Password is mandatory")
             return;
         }
-        
+
         setLoading(true);
-        
-        const usersData = localStorage.getItem("users");
-        if (!usersData) {
-            alert("No users found");
-            setLoading(false);
-            return;
-        }
-        
-        const users = JSON.parse(usersData);
-        const userInfo = users.find((user: { email: string; password: string }) => user.email === email);
-        
-        if (!userInfo) {
-            alert("User not found");
-            setLoading(false);
-            return;
-        }
-        
-        if (userInfo.password === password) {
-            localStorage.setItem("userInfo", JSON.stringify(userInfo))
-            navigate("/home")
-        } else {
-            alert("Invalid password");
+
+        try {
+            const data = await login(email, password);
+            localStorage.setItem('userInfo', JSON.stringify(data.user));
+            localStorage.setItem('token', data.token);
+            navigate('/home');
+        } catch (error: any) {
+            alert(error.message || 'Login failed');
+        } finally {
             setLoading(false);
         }
     }

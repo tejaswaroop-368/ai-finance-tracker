@@ -100,32 +100,8 @@ VITE_GEMINI_API_KEY=YOUR_GOOGLE_GEMINI_API_KEY
   - `https://ai-finance-management.netlify.app/login`
   - `https://ai-finance-management.netlify.app/home/insights`
 
-## Screenshots to include for interview/demo
-Add high-quality screenshots for the following views:
-
-1. **Login page**
-   - Show the initial authentication screen.
-2. **Dashboard page**
-   - Show summary cards or dashboard widgets.
-3. **Accounts page**
-   - Show account listing or account details.
-4. **Transactions page**
-   - Show transaction table and add/edit buttons.
-5. **AI Insights page**
-   - Show the `Generate AI Analysis` button, summary panel, and AI result cards.
-6. **Profile page**
-   - Show the user profile area and sidebar navigation.
-
-## Why this project is resume-worthy
-- Demonstrates full-stack React skills with TypeScript and Vite
-- Implements client-side authentication and protected routing
-- Uses browser storage and local persistence
-- Integrates AI using Google Gemini
-- Includes SPA-ready Netlify configuration for deployment
-- Uses reusable React components and clean page layout
 
 ## Future improvements
-Potential upgrades for production readiness:
 - Add a backend API for secure authentication and persistent storage
 - Move AI calls to a serverless function or backend proxy
 - Add unit tests and integration tests

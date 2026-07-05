@@ -4,6 +4,7 @@ import Form from 'react-bootstrap/Form';
 import { Link } from 'react-router';
 import { useNavigate } from "react-router";
 import AuthLayout from './AuthLayout';
+import { signUp } from '../utils/api';
 
 const Signup = () => {
     const [email, setEmail] = useState('');
@@ -12,7 +13,7 @@ const Signup = () => {
     const [loading, setLoading] = useState(false);
     let navigate = useNavigate();
 
-    const handleSignUp = () => {
+    const handleSignUp = async () => {
         if (!email) {
             alert("Email is mandatory")
             return;
@@ -29,29 +30,18 @@ const Signup = () => {
             alert("Passwords don't match!")
             return;
         }
-        
+
         setLoading(true);
-        
-        const userItems = localStorage.getItem("users");
-        let users = [];
-        if (userItems != null) {
-            users = JSON.parse(userItems);
-        }
-        
-        // Check if email already exists
-        if (users.some((user: { email: string }) => user.email === email)) {
-            alert("Email already registered");
+
+        try {
+            await signUp(email, password);
+            alert("Signup successful!");
+            navigate('/login');
+        } catch (error: any) {
+            alert(error.message || 'Signup failed');
+        } finally {
             setLoading(false);
-            return;
         }
-        
-        users = [...users, {
-            "email": email,
-            "password": password
-        }];
-        localStorage.setItem("users", JSON.stringify(users))
-        alert("Signup successful!")
-        navigate("/login");
     }
 
     const isPasswordMatch = password === confirmPassword && confirmPassword !== '';

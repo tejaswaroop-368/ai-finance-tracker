@@ -48,22 +48,25 @@ const Insights = () => {
         }).format(value);
     };
 
-    const loadTransactions = (): Transaction[] => {
-        const stored = localStorage.getItem('transactions');
-        if (!stored) {
-            return [];
-        }
-
+    const loadTransactions = async (): Promise<Transaction[]> => {
         try {
-            const parsed = JSON.parse(stored);
-            if (Array.isArray(parsed)) {
-                return parsed;
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:5001/api/transactions', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                return [];
             }
+
+            const data = await response.json();
+            return Array.isArray(data) ? data : [];
         } catch {
             return [];
         }
-
-        return [];
     };
 
     const calculateSummary = (transactions: Transaction[]) => {
@@ -116,22 +119,47 @@ Provide the response as valid JSON with these keys:
 Do not include any extra text outside the JSON object.`;
     };
 
-    const parseGeminiResponse = (text: string): AIResponse => {
-        try {
-            const parsed = JSON.parse(text);
+    const normalizeJsonString = (value: string): string => {
+        const trimmed = value.trim();
+        const codeFenceMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+        if (codeFenceMatch?.[1]) {
+            return codeFenceMatch[1].trim();
+        }
+
+        const objectMatch = trimmed.match(/({[\s\S]*})/);
+        if (objectMatch?.[1]) {
+            return objectMatch[1].trim();
+        }
+
+        return trimmed;
+    };
+
+    const parseGeminiResponse = (response: unknown): AIResponse => {
+        if (response && typeof response === 'object' && !Array.isArray(response)) {
+            const parsedObject = response as Record<string, unknown>;
             return {
-                spendingAnalysis: String(parsed.spendingAnalysis || ''),
-                overspendingAreas: String(parsed.overspendingAreas || ''),
-                budgetRecommendations: String(parsed.budgetRecommendations || ''),
-                savingsRecommendations: String(parsed.savingsRecommendations || ''),
-                financialHealthScore: String(parsed.financialHealthScore || ''),
-            };
-        } catch {
-            return {
-                ...emptyAIResponse,
-                spendingAnalysis: text,
+                spendingAnalysis: String(parsedObject.spendingAnalysis || ''),
+                overspendingAreas: String(parsedObject.overspendingAreas || ''),
+                budgetRecommendations: String(parsedObject.budgetRecommendations || ''),
+                savingsRecommendations: String(parsedObject.savingsRecommendations || ''),
+                financialHealthScore: String(parsedObject.financialHealthScore || ''),
             };
         }
+
+        if (typeof response !== 'string') {
+            throw new Error('AI response is not parseable.');
+        }
+
+        const normalized = normalizeJsonString(response);
+        const parsed = JSON.parse(normalized);
+
+        return {
+            spendingAnalysis: String(parsed.spendingAnalysis || ''),
+            overspendingAreas: String(parsed.overspendingAreas || ''),
+            budgetRecommendations: String(parsed.budgetRecommendations || ''),
+            savingsRecommendations: String(parsed.savingsRecommendations || ''),
+            financialHealthScore: String(parsed.financialHealthScore || ''),
+        };
     };
 
     const generateAIAnalysis = async () => {
@@ -139,13 +167,13 @@ Do not include any extra text outside the JSON object.`;
         setAIResponse(null);
         setIsLoading(true);
 
-        const transactions = loadTransactions();
+        const transactions = await loadTransactions();
         const summaryData = calculateSummary(transactions);
         setSummary(summaryData);
         setHasSummary(true);
 
         if (transactions.length === 0) {
-            setError('No transaction data available in localStorage. Add transactions first to generate AI analysis.');
+            setError('No transaction data available. Add transactions first to generate AI analysis.');
             setIsLoading(false);
             return;
         }
@@ -168,7 +196,8 @@ Do not include any extra text outside the JSON object.`;
             const parsed = parseGeminiResponse(rawText);
             setAIResponse(parsed);
         } catch (fetchError) {
-            setError(String(fetchError || 'Unknown error from Google Gemini API.'));
+            const message = fetchError instanceof Error ? fetchError.message : String(fetchError);
+            setError(`Failed to parse AI response: ${message}`);
         } finally {
             setIsLoading(false);
         }

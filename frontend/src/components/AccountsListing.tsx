@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from 'react-bootstrap';
 import AccountModal from './AccountModal';
+import { fetchAccounts, createAccount, updateAccount, deleteAccount } from '../utils/accountsApi';
 
 interface Account {
     id: string;
@@ -22,27 +23,18 @@ const AccountsListing = () => {
     const [dropdownPos, setDropdownPos] = useState<DropdownPosition>({ top: 0, left: 0 });
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    // Load accounts from localStorage on mount
     useEffect(() => {
-        const savedAccounts = localStorage.getItem('accounts');
-        if (savedAccounts) {
-            setAccounts(JSON.parse(savedAccounts));
-        } else {
-            // Initialize with sample data
-            const sampleAccounts = [
-                { id: '1', name: 'Checking Account', type: 'Checking Account', balance: 4500.50 },
-                { id: '2', name: 'Savings Account', type: 'Savings Account', balance: 15000.00 },
-                { id: '3', name: 'Credit Card', type: 'Credit Card', balance: 2500.00 },
-            ];
-            setAccounts(sampleAccounts);
-            localStorage.setItem('accounts', JSON.stringify(sampleAccounts));
-        }
-    }, []);
+        const loadAccounts = async () => {
+            try {
+                const data = await fetchAccounts();
+                setAccounts(data);
+            } catch (error: any) {
+                console.error(error.message || 'Unable to load accounts');
+            }
+        };
 
-    // Save accounts to localStorage whenever they change
-    useEffect(() => {
-        localStorage.setItem('accounts', JSON.stringify(accounts));
-    }, [accounts]);
+        loadAccounts();
+    }, []);
 
     const handleShowModal = () => {
         setEditingAccount(null);
@@ -55,22 +47,39 @@ const AccountsListing = () => {
         setShowActionsMenu(null);
     };
 
-    const handleDeleteAccount = (id: string) => {
+    const handleDeleteAccount = async (id: string) => {
         if (window.confirm('Are you sure you want to delete this account?')) {
-            setAccounts(accounts.filter(account => account.id !== id));
-            setShowActionsMenu(null);
+            try {
+                await deleteAccount(id);
+                setAccounts(accounts.filter(account => account.id !== id));
+                setShowActionsMenu(null);
+            } catch (error: any) {
+                alert(error.message || 'Failed to delete account');
+            }
         }
     };
 
-    const handleSaveAccount = (account: Account) => {
-        if (editingAccount) {
-            // Update existing account
-            setAccounts(accounts.map(acc => acc.id === account.id ? account : acc));
-        } else {
-            // Add new account
-            setAccounts([...accounts, account]);
+    const handleSaveAccount = async (account: Account) => {
+        try {
+            if (editingAccount) {
+                const updated = await updateAccount(account.id, {
+                    name: account.name,
+                    type: account.type,
+                    balance: account.balance,
+                });
+                setAccounts(accounts.map(acc => acc.id === updated._id ? { ...acc, ...updated, id: updated._id } : acc));
+            } else {
+                const created = await createAccount({
+                    name: account.name,
+                    type: account.type,
+                    balance: account.balance,
+                });
+                setAccounts([...accounts, { ...created, id: created._id }]);
+            }
+            setShowModal(false);
+        } catch (error: any) {
+            alert(error.message || 'Failed to save account');
         }
-        setShowModal(false);
     };
 
     const toggleActionsMenu = (accountId: string, e: React.MouseEvent) => {

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from 'react-bootstrap';
 import TransactionModal from './TransactionModal';
+import { fetchTransactions, createTransaction, updateTransaction, deleteTransaction } from '../utils/transactionsApi';
 
 interface Transaction {
     id: string;
@@ -27,60 +28,18 @@ const TransactionsListing = () => {
     const itemsPerPage = 10;
     const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
-    // Load transactions from localStorage on mount
     useEffect(() => {
-        const savedTransactions = localStorage.getItem('transactions');
-        if (savedTransactions) {
-            setTransactions(JSON.parse(savedTransactions));
-        } else {
-            // Initialize with sample data
-            const sampleTransactions = [
-                {
-                    id: '1',
-                    date: '08-Jun-2024',
-                    description: 'Grocery Store',
-                    category: 'Groceries',
-                    account: 'Checking Account',
-                    type: 'Debit',
-                    amount: 150.00,
-                },
-                {
-                    id: '2',
-                    date: '07-Jun-2024',
-                    description: 'Salary Deposit',
-                    category: 'Income',
-                    account: 'Checking Account',
-                    type: 'Credit',
-                    amount: 5000.00,
-                },
-                {
-                    id: '3',
-                    date: '06-Jun-2024',
-                    description: 'Gas Station',
-                    category: 'Transport',
-                    account: 'Checking Account',
-                    type: 'Debit',
-                    amount: 75.00,
-                },
-                {
-                    id: '4',
-                    date: '05-Jun-2024',
-                    description: 'Restaurant Bill',
-                    category: 'Dining',
-                    account: 'Credit Card',
-                    type: 'Debit',
-                    amount: 45.50,
-                },
-            ];
-            setTransactions(sampleTransactions);
-            localStorage.setItem('transactions', JSON.stringify(sampleTransactions));
-        }
-    }, []);
+        const loadTransactions = async () => {
+            try {
+                const data = await fetchTransactions();
+                setTransactions(data);
+            } catch (error: any) {
+                console.error(error.message || 'Unable to load transactions');
+            }
+        };
 
-    // Save transactions to localStorage whenever they change
-    useEffect(() => {
-        localStorage.setItem('transactions', JSON.stringify(transactions));
-    }, [transactions]);
+        loadTransactions();
+    }, []);
 
     const handleShowModal = () => {
         setEditingTransaction(null);
@@ -93,22 +52,45 @@ const TransactionsListing = () => {
         setShowModal(true);
     };
 
-    const handleDeleteTransaction = (id: string) => {
+    const handleDeleteTransaction = async (id: string) => {
         if (window.confirm('Are you sure you want to delete this transaction?')) {
-            setTransactions(transactions.filter(transaction => transaction.id !== id));
-            setShowActionsMenu(null);
+            try {
+                await deleteTransaction(id);
+                setTransactions(transactions.filter(transaction => transaction.id !== id));
+                setShowActionsMenu(null);
+            } catch (error: any) {
+                alert(error.message || 'Failed to delete transaction');
+            }
         }
     };
 
-    const handleSaveTransaction = (transaction: Transaction) => {
-        if (editingTransaction) {
-            // Update existing transaction
-            setTransactions(transactions.map(txn => txn.id === transaction.id ? transaction : txn));
-        } else {
-            // Add new transaction
-            setTransactions([...transactions, transaction]);
+    const handleSaveTransaction = async (transaction: Transaction) => {
+        try {
+            if (editingTransaction) {
+                const updated = await updateTransaction(transaction.id, {
+                    date: transaction.date,
+                    description: transaction.description,
+                    category: transaction.category,
+                    account: transaction.account,
+                    type: transaction.type,
+                    amount: transaction.amount,
+                });
+                setTransactions(transactions.map(txn => txn.id === transaction.id ? { ...txn, ...updated, id: updated._id } : txn));
+            } else {
+                const created = await createTransaction({
+                    date: transaction.date,
+                    description: transaction.description,
+                    category: transaction.category,
+                    account: transaction.account,
+                    type: transaction.type,
+                    amount: transaction.amount,
+                });
+                setTransactions([...transactions, { ...created, id: created._id }]);
+            }
+            setShowModal(false);
+        } catch (error: any) {
+            alert(error.message || 'Failed to save transaction');
         }
-        setShowModal(false);
     };
 
     const toggleActionsMenu = (transactionId: string, e: React.MouseEvent) => {
