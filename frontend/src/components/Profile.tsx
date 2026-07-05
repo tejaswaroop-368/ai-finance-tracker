@@ -19,7 +19,7 @@ const Profile = () => {
             setError('');
 
             try {
-                const response = await fetch(`${API_BASE}/api/auth/me`, {
+                const response = await fetch(`${API_URL}/api/auth/me`, {
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${localStorage.getItem('token')}`,

@@ -21,13 +21,7 @@ interface AIResponse {
     financialHealthScore: string;
 }
 
-const emptyAIResponse: AIResponse = {
-    spendingAnalysis: '',
-    overspendingAreas: '',
-    budgetRecommendations: '',
-    savingsRecommendations: '',
-    financialHealthScore: '',
-};
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Insights = () => {
     const [summary, setSummary] = useState({

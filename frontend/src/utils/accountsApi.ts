@@ -8,7 +8,7 @@ const authHeaders = () => ({
 });
 
 export const fetchAccounts = async () => {
-  const response = await fetch(`${API_BASE}/api/accounts`, {
+  const response = await fetch(`${API_URL}/api/accounts`, {
     headers: authHeaders(),
   });
   if (!response.ok) {
@@ -19,7 +19,7 @@ export const fetchAccounts = async () => {
 };
 
 export const createAccount = async (account: { name: string; type: string; balance: number }) => {
-  const response = await fetch(`${API_BASE}/api/accounts`, {
+  const response = await fetch(`${API_URL}/api/accounts`, {
     method: 'POST',
     headers: authHeaders(),
     body: JSON.stringify(account),
@@ -32,7 +32,7 @@ export const createAccount = async (account: { name: string; type: string; balan
 };
 
 export const updateAccount = async (id: string, account: { name: string; type: string; balance: number }) => {
-  const response = await fetch(`${API_BASE}/api/accounts/${id}`, {
+  const response = await fetch(`${API_URL}/api/accounts/${id}`, {
     method: 'PUT',
     headers: authHeaders(),
     body: JSON.stringify(account),
@@ -45,7 +45,7 @@ export const updateAccount = async (id: string, account: { name: string; type: s
 };
 
 export const deleteAccount = async (id: string) => {
-  const response = await fetch(`${API_BASE}/api/accounts/${id}`, {
+  const response = await fetch(`${API_URL}/api/accounts/${id}`, {
     method: 'DELETE',
     headers: authHeaders(),
   });

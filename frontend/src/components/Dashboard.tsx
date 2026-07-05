@@ -44,9 +44,9 @@ const Dashboard = () => {
 
             try {
                 const [profileRes, accountsRes, transactionsRes] = await Promise.all([
-                    fetch(`${API_BASE}/api/auth/me`, { headers: authHeaders() }),
-                    fetch(`${API_BASE}/api/accounts`, { headers: authHeaders() }),
-                    fetch(`${API_BASE}/api/transactions`, { headers: authHeaders() }),
+                    fetch(`${API_URL}/api/auth/me`, { headers: authHeaders() }),
+                    fetch(`${API_URL}/api/accounts`, { headers: authHeaders() }),
+                    fetch(`${API_URL}/api/transactions`, { headers: authHeaders() }),
                 ]);
 
                 if (!profileRes.ok) {

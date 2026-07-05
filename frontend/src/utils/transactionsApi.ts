@@ -8,7 +8,7 @@ const authHeaders = () => ({
 });
 
 export const fetchTransactions = async () => {
-  const response = await fetch(`${API_BASE}/api/transactions`, {
+  const response = await fetch(`${API_URL}/api/transactions`, {
     headers: authHeaders(),
   });
 
@@ -28,7 +28,7 @@ export const createTransaction = async (transaction: {
   type: string;
   amount: number;
 }) => {
-  const response = await fetch(`${API_BASE}/api/transactions`, {
+  const response = await fetch(`${API_URL}/api/transactions`, {
     method: 'POST',
     headers: authHeaders(),
     body: JSON.stringify(transaction),
@@ -50,7 +50,7 @@ export const updateTransaction = async (id: string, transaction: {
   type?: string;
   amount?: number;
 }) => {
-  const response = await fetch(`${API_BASE}/api/transactions/${id}`, {
+  const response = await fetch(`${API_URL}/api/transactions/${id}`, {
     method: 'PUT',
     headers: authHeaders(),
     body: JSON.stringify(transaction),
@@ -65,7 +65,7 @@ export const updateTransaction = async (id: string, transaction: {
 };
 
 export const deleteTransaction = async (id: string) => {
-  const response = await fetch(`${API_BASE}/api/transactions/${id}`, {
+  const response = await fetch(`${API_URL}/api/transactions/${id}`, {
     method: 'DELETE',
     headers: authHeaders(),
   });
